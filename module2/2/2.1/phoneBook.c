@@ -4,4 +4,5 @@
 void addPerson()
 {
     printf("Введите имя: ");
+    // scanf();
 }
