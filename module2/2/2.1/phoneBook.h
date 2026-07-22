@@ -2,14 +2,24 @@
 #define MAX_SIZE 128
 typedef struct Person
 {
-    char firstName[MAX_SIZE];
-    char lastName[MAX_SIZE];
-    char surname[MAX_SIZE];
-    char emailAddress[MAX_SIZE];
-    char phoneNumber[MAX_SIZE];
-    char media[MAX_SIZE];
+    char* firstName;
+    char* lastName;
+    char* surname;
+    char* emailAddress;
+    char* phoneNumber;
+    char* media;
 } Person;
+
+void initPerson(Person* p);
 void addPerson();
+struct Media
+{
+    
+};
+
+
+
+
 
 struct PhoneBook
 {

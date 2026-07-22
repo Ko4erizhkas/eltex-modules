@@ -1,10 +1,15 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+#include <windows.h>
+
 #include "phoneBook.h"
 
 int main()
 {
+    SetConsoleOutputCP(1251);
+    SetConsoleCP(1251);
+
     Person p;
     //strncpy(p.firstName, "Ezh", 4);
     bool work = true;
@@ -17,9 +22,11 @@ int main()
         scanf("%zu", &choice);
         switch (choice)
         {
-            case 0:
-                break;
-            case 1: 
+            case 1:
+                size_t choice_1;
+                printf(" ");
+                scanf("%zu", &choice_1);
+                addPerson(); 
                 break;
             case 2: 
                 break;
