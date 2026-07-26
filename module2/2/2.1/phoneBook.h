@@ -1,31 +1,60 @@
-#pragma once
+#ifndef PHONEBOOK_H
+#define PHONEBOOK_H
+
+#include <stdio.h>
+
 #define MAX_SIZE 128
-typedef struct Person
-{
-    char* firstName;
-    char* lastName;
-    char* surname;
-    char* emailAddress;
-    char* phoneNumber;
-    char* media;
-} Person;
+#define MAX_SIZE_LINK 512
+#define MAX_COUNT 4
+#define MAX_COUNT_CONTACTS 8
 
-void initPerson(Person* p);
-void addPerson();
-struct Media
+typedef struct Social
 {
+    char typeSocial[MAX_SIZE];
+    char username[MAX_SIZE];
+    char link[MAX_SIZE_LINK];
+
+} Social;
+
+typedef struct Numbers
+{
+    char number[MAX_SIZE];
+
+} Numbers;
+
+typedef struct Contact
+{
+    char name[MAX_SIZE];
+    char surname[MAX_SIZE];
+    char patronymic[MAX_SIZE];
+       
+    size_t countNumbers;
+    size_t countSocial;
     
-};
+    Numbers phonenumber[MAX_COUNT];
+    Social social[MAX_COUNT];
 
+} Contact;
 
-
-
-
-struct PhoneBook
+typedef struct Phonebook
 {
-    Person data;
-    struct PhoneBook* next;
-};
+    Contact contacts[MAX_COUNT_CONTACTS];
 
-void editPerson(Person p);
-void deletePerson(Person p);
+} Phonebook;
+
+static void addNames(Contact* c);
+static void addNumber(Contact* c);
+static void addSocial(Contact* c);
+static Contact addContact(void);
+static void addContactInPhonebook(Phonebook* pb, Contact* c);
+
+static void deleteContact(Phonebook* pb);
+static void deleteNumber(Contact* c);
+static void deleteSocial(Contact* c);
+
+static void editContact(Phonebook* pb);
+
+static void printPhonebook(Phonebook* pb);
+static void printContact(Contact* c);
+
+#endif

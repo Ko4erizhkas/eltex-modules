@@ -2,32 +2,131 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-void addPerson()
-{
-    printf("Введите имя: ");
-    // scanf();
-}
 
-void initPerson(Person* p)
-{
-    p->firstName = malloc(MAX_SIZE * sizeof(char));
-    p->lastName = malloc(MAX_SIZE * sizeof(char));
-    p->surname = malloc(MAX_SIZE * sizeof(char));
-}
-void addEmailAddress(Person* p)
-{
-    p->emailAddress = malloc(MAX_SIZE * sizeof(char));
-    
-    char emailBuf[MAX_SIZE] = "";
-    
-    printf("Введите адрес электронной почты:");
-    fflush(stdout);
 
-    if (fgets(emailBuf, sizeof(emailBuf), stdin) == NULL) 
+static void addNumber(Contact* c)
+{
+    c->countNumbers = 0;
+
+    while (c->countNumbers < MAX_COUNT)
     {
-        p->emailAddress = NULL;
-    }
+        printf("Введите номер телефона #%d (пусто - завершить) (максимум 4 номера): ", c->countNumbers + 1);
+        char* dest = c->phonenumber[c->countNumbers].number;
+        size_t size = sizeof(c->phonenumber[c->countNumbers].number);
 
-    emailBuf[strcspn(emailBuf, "\n")] = '\0';
-    p->emailAddress = strdup(emailBuf);
+        if(fgets(dest, size, stdin) == NULL)
+        {
+            break;
+        }
+        dest[strcspn(dest,"\n")] = '\0';
+
+        if (dest[0] == '\0')
+        {
+            break;
+        }
+
+        c->countNumbers++;
+    }
 }
+static void addSocial(Contact* c)
+{
+    c->countSocial = 0;
+
+
+    while (c->countSocial < MAX_COUNT)
+    {
+        Social* s = &c->social[c->countSocial];
+        printf("Максимум 4 соцсети !!\n");
+        printf("Соцсеть #%d - платформа (пусто - завершить): ", c->countSocial + 1);
+
+        fgets(s->typeSocial, sizeof(s->typeSocial), stdin);
+        s->typeSocial[strcspn(s->typeSocial, "\n")] = '\0';
+
+        if(s->typeSocial[0] = '\0') break;
+        
+        printf("\n");
+        printf("Имя пользователя - обязательно: ");
+        if(fgets(s->username, sizeof(s->username), stdin) == NULL) break;
+        s->username[strcspn(s->username, "\n")] = '\0';
+ 
+        printf("\n");
+        printf("Ссылка на профиль - обязательно: ");
+        if(fgets(s->link, sizeof(s->link), stdin) == NULL) break;
+        s->link[strcspn(s->link, "\n")] = '\0';
+        
+        c->countSocial++;
+    }
+}
+static void addNames(Contact* c)
+{
+    printf("\nВведите Ф.И.О");
+    printf("Фамилия - обязательно: ");
+    if(fgets(c->surname, sizeof(c->surname), stdin) == NULL) return;
+    c->surname[strcspn(c->surname, "\n")] = '\0';
+
+    printf("\n");
+    printf("Имя - обязательно: ");
+    if(fgets(c->name, sizeof(c->name), stdin) == NULL) return;
+    c->surname[strcspn(c->surname, "\n")] = '\0';
+    
+    printf("\n");
+    printf("Отчество: ");
+    fgets(c->patronymic, sizeof(c->patronymic), stdin);
+    c->surname[strcspn(c->surname, "\n")] = '\0';
+
+}
+static Contact addContact(void)
+{
+    Contact* c;
+
+    addNumber(c);
+    addSocial(c);
+
+    return *c;
+}
+
+static void printContact(Contact* c)
+{
+    printf("\n-----------------------\n");
+    printf("Информация о контакте: %c %c %c", c->name, c->surname, c->patronymic);
+    printf("Социальные сети:\n");
+    if (c->countSocial == 0)
+    {
+        printf("Пусто\n");
+    }
+    else 
+    {
+        for (int i = 0; i < c->countSocial - 1; ++i)
+        {
+            printf("Тип соцсети: %c\nСсылка на профиль: %c\n Никнейм: %c", 
+                c->social[i].typeSocial,
+                c->social[i].link,
+                c->social[i].username);
+        }
+    }
+    printf("Номера телефонов:\n");
+    if(c->countNumbers == 0)
+    {
+        printf("Пусто\n");
+    }
+    else
+    {
+        for (int i = 0; i < c->countNumbers - 1; ++i)
+        {
+            printf("Номер #%d\n", i + 1);
+            printf("%c", c->phonenumber[i].number);
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+

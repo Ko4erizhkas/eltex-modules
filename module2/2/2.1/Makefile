@@ -1,5 +1,5 @@
 CC = gcc
 CFLAGS = -c -Wall
 all:
-	$(CC) test.c -o phoneBook.exe
+	$(CC) phonebook.c main.c -o phoneBook.exe
 	
