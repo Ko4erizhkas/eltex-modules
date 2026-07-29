@@ -38,14 +38,15 @@ typedef struct Contact
 
 typedef struct Phonebook
 {
-    Contact contacts[MAX_COUNT_CONTACTS];
+    int countContacts;
+    Contact* contacts[MAX_COUNT_CONTACTS];
 
 } Phonebook;
 
 static void addNames(Contact* c);
 static void addNumber(Contact* c);
 static void addSocial(Contact* c);
-static Contact addContact(void);
+static Contact* addContact(void);
 static void addContactInPhonebook(Phonebook* pb, Contact* c);
 
 static void deleteContact(Phonebook* pb);
@@ -53,8 +54,15 @@ static void deleteNumber(Contact* c);
 static void deleteSocial(Contact* c);
 
 static void editContact(Phonebook* pb);
+static void editNumber(Contact* c);
+static void editSocial(Contact* c);
 
 static void printPhonebook(Phonebook* pb);
 static void printContact(Contact* c);
+
+
+void printInterface(void);
+
+
 
 #endif

@@ -1,7 +1,10 @@
-#include "phoneBook.h"
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <windows.h>
+
+#include "phoneBook.h"
+
 
 
 static void addNumber(Contact* c)
@@ -42,7 +45,7 @@ static void addSocial(Contact* c)
         fgets(s->typeSocial, sizeof(s->typeSocial), stdin);
         s->typeSocial[strcspn(s->typeSocial, "\n")] = '\0';
 
-        if(s->typeSocial[0] = '\0') break;
+        if(s->typeSocial[0] == '\0') break;
         
         printf("\n");
         printf("Имя пользователя - обязательно: ");
@@ -75,20 +78,21 @@ static void addNames(Contact* c)
     c->surname[strcspn(c->surname, "\n")] = '\0';
 
 }
-static Contact addContact(void)
+static Contact* addContact(void)
 {
     Contact* c;
-
+    
+    addNames(c);
     addNumber(c);
     addSocial(c);
 
-    return *c;
+    return c;
 }
 
 static void printContact(Contact* c)
 {
     printf("\n-----------------------\n");
-    printf("Информация о контакте: %c %c %c", c->name, c->surname, c->patronymic);
+    printf("Информация о контакте: %s %s %s", c->name, c->surname, c->patronymic);
     printf("Социальные сети:\n");
     if (c->countSocial == 0)
     {
@@ -96,7 +100,7 @@ static void printContact(Contact* c)
     }
     else 
     {
-        for (int i = 0; i < c->countSocial - 1; ++i)
+        for (int i = 0; i < c->countSocial; ++i)
         {
             printf("Тип соцсети: %c\nСсылка на профиль: %c\n Никнейм: %c", 
                 c->social[i].typeSocial,
@@ -118,10 +122,80 @@ static void printContact(Contact* c)
         }
     }
 }
+static void printPhonebook(Phonebook* pb)
+{
+    for (int i = 0; i < pb->countContacts; i++)
+    {
+        if (pb->contacts[i] != NULL)
+        {
+            printContact(pb->contacts[i]);
+        }
+    }
+}
+
+static void addContactInPhonebook(Phonebook* pb, Contact* c)
+{
+    if (pb->countContacts >= MAX_COUNT_CONTACTS)
+    {
+        fprintf(stderr,"Телефонная книга заполнена\n");
+        return;
+    }
+    pb->contacts[pb->countContacts] = c;
+    pb->countContacts++;
+}
+void printInterface(void)
+{
+    Phonebook* pb;
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+    pb = malloc(sizeof(Phonebook));
+    for(;;)
+    {
 
 
+        printf("\n1. Добавить контакт\n");
+        printf("2. Удалить контакт\n");
+        printf("3. Изменить контакт\n");
+        printf("4. Вывести все контакты\n");
+        printf("0. Выйти\n");
+        // printf("");
 
 
+        printf("Выберите действие: ");
+
+        char line[8];
+        fgets(line, sizeof(line), stdin);
+        line[strcspn(line, "\n")] = '\0';
+        int choice = atoi(line);
+
+        switch(choice)
+        {
+            case 0: break;
+            case 1:
+                printf("");
+                break;
+            case 2:
+
+                break;
+            case 3:
+
+                break;
+            case 4:
+                printPhonebook(pb);
+                break;
+            default: 
+                fprintf(stderr, "Неизвестное действие");
+                break;
+        }
+
+        if (choice == 0)
+        {
+            //for (int i = 0; i < )
+            free(pb);
+            break;
+        }
+    }
+}
 
 
 
