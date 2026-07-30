@@ -49,13 +49,13 @@ static void addSocial(Contact* c);
 static Contact* addContact(void);
 static void addContactInPhonebook(Phonebook* pb, Contact* c);
 
-static void deleteContact(Phonebook* pb);
-static void deleteNumber(Contact* c);
-static void deleteSocial(Contact* c);
+static void deleteContact(Phonebook* pb, int index);
+static void deleteNumber(Contact* c, int index);
+static void deleteSocial(Contact* c, int index);
 
-static void editContact(Phonebook* pb);
-static void editNumber(Contact* c);
-static void editSocial(Contact* c);
+static void editContact(Phonebook* pb, int index);
+static void editNumber(Contact* c, int index);
+static void editSocial(Contact* c, int index);
 
 static void printPhonebook(Phonebook* pb);
 static void printContact(Contact* c);
