@@ -1,12 +1,7 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdbool.h>
-
-
 #include "phoneBook.h"
 
 int main()
 {
-    printInterface();
+    print_interface();
     return 0;
 }

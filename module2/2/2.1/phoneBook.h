@@ -8,6 +8,25 @@
 #define MAX_COUNT 4
 #define MAX_COUNT_CONTACTS 8
 
+typedef enum 
+{
+    MENU_EXIT = 0,
+    MENU_ADD = 1,
+    MENU_DELETE = 2,
+    MENU_EDIT = 3,
+    MENU_PRINT = 4
+} MenuAction;
+
+typedef enum
+{
+    EDIT_EXIT = 0,
+    EDIT_NAMES = 1,
+    EDIT_SOCIAL = 2,
+    EDIT_SOCIAL_DELETE = 3,
+    EDIT_PHONE = 4,
+    EDIT_PHONE_DELETE = 5
+} EditAction;
+
 typedef struct Social
 {
     char typeSocial[MAX_SIZE];
@@ -54,15 +73,17 @@ static void deleteNumber(Contact* c, int index);
 static void deleteSocial(Contact* c, int index);
 
 static void editContact(Phonebook* pb, int index);
+static void editNames(Contact* c);
 static void editNumber(Contact* c, int index);
 static void editSocial(Contact* c, int index);
 
 static void printPhonebook(Phonebook* pb);
 static void printContact(Contact* c);
+static void printNumbers(Contact* c);
+static void printSocials(Contact* c);
 
 
-void printInterface(void);
-
+void print_interface(void);
 
 
 #endif
