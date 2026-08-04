@@ -148,7 +148,11 @@ static void deleteSocial(Contact* c, int index)
         fprintf(stderr, "Отрицательный индекс соц сети. Удаление невозможно!\n");
         return;
     }
-
+    if (index > c->countSocial)
+    {
+        fprintf(stderr, "Выход за границы списка соц сетей\n");
+        return;
+    }
     memmove(&c->social[index], &c->social[index + 1],
     (c->countSocial - index - 1) * sizeof(Social));
     
