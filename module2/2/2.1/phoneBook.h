@@ -47,8 +47,8 @@ typedef struct Contact
     char surname[MAX_SIZE];
     char patronymic[MAX_SIZE];
        
-    size_t countNumbers;
-    size_t countSocial;
+    int countNumbers;
+    int countSocial;
     
     Numbers phonenumber[MAX_COUNT];
     Social social[MAX_COUNT];

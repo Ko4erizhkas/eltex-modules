@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 #include <windows.h>
-
 #include "phoneBook.h"
 
 
@@ -129,22 +128,6 @@ static void deleteContact(Phonebook* pb, int index)
     pb->contacts[pb->countContacts - 1] = NULL;
     pb->countContacts--;
 }
-
-static void deleteNumbers(Contact* c, int index)
-{
-    if (index < 0) 
-    {
-        fprintf(stderr, "Отрицательный индекс номера. Удаление невозможно!\n");
-        return;
-    }
-
-    memmove(&c->phonenumber[index], &c->phonenumber[index + 1], 
-        (c->countNumbers - index - 1)* sizeof(Numbers));
-    
-    c->phonenumber[c->countNumbers - 1].number[0] = '\0';
-    c->countNumbers--;
-}
-
 static void deleteSocial(Contact* c, int index)
 {
     if (index < 0) 
@@ -163,8 +146,8 @@ static void deleteSocial(Contact* c, int index)
     (c->countSocial - index - 1) * sizeof(Social));
     
     c->social[c->countSocial - 1].link[0] = '\0';
-    c->social[c->countNumbers - 1].typeSocial[0] = '\0';
-    c->social[c->countNumbers - 1].username[0] = '\0';
+    c->social[c->countSocial - 1].typeSocial[0] = '\0';
+    c->social[c->countSocial - 1].username[0] = '\0';
     c->countSocial--;
 
 }
@@ -238,7 +221,7 @@ static void editNumber(Contact* c, int index)
         return;
     }
     char buffer[MAX_SIZE];
-    printf("Номер [%s]: ", c->phonenumber[index]);
+    printf("Номер [%s]: ", c->phonenumber[index].number);
     if(fgets(buffer, sizeof(buffer), stdin) != NULL)
     {
         buffer[strcspn(buffer, "\n")] = '\0';
@@ -391,9 +374,6 @@ static void fillTestData(Phonebook* pb)
 }
 void print_interface(void)
 {
-    SetConsoleCP(CP_UTF8);
-    SetConsoleOutputCP(CP_UTF8);
-
     Phonebook* pb;
     pb = malloc(sizeof(Phonebook));
 
