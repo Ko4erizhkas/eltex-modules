@@ -72,16 +72,12 @@ static void deleteContact(Phonebook* pb, int index);
 static void deleteNumber(Contact* c, int index);
 static void deleteSocial(Contact* c, int index);
 
-static void editContact(Phonebook* pb, int index);
 static void editNames(Contact* c);
 static void editNumber(Contact* c, int index);
 static void editSocial(Contact* c, int index);
 
 static void printPhonebook(Phonebook* pb);
 static void printContact(Contact* c);
-static void printNumbers(Contact* c);
-static void printSocials(Contact* c);
-
 
 void print_interface(void);
 

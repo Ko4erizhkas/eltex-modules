@@ -114,7 +114,11 @@ static Contact* addContact(void)
 
     return c;
 }
-
+static void addContactInPhonebook(Phonebook* pb, Contact* c)
+{
+    pb->contacts[pb->countContacts] = c;
+    pb->countContacts++;
+}
 static void deleteContact(Phonebook* pb, int index)
 {
     free(pb->contacts[index]);
@@ -148,11 +152,13 @@ static void deleteSocial(Contact* c, int index)
         fprintf(stderr, "Отрицательный индекс соц сети. Удаление невозможно!\n");
         return;
     }
+
     if (index > c->countSocial)
     {
         fprintf(stderr, "Выход за границы списка соц сетей\n");
         return;
     }
+
     memmove(&c->social[index], &c->social[index + 1],
     (c->countSocial - index - 1) * sizeof(Social));
     
@@ -162,24 +168,154 @@ static void deleteSocial(Contact* c, int index)
     c->countSocial--;
 
 }
+static void deleteNumber(Contact* c, int index)
+{
+    if (index < 0) 
+    {
+        fprintf(stderr, "Отрицательный индекс номера. Удаление невозможно!\n");
+        return;
+    }
+
+    if (index > c->countNumbers)
+    {
+        fprintf(stderr, "Выход за границы списка номеров\n");
+        return;
+    }
+
+    memmove(&c->phonenumber[index], &c->phonenumber[index + 1],
+            (c->countNumbers - index - 1) * sizeof(Numbers));
+    
+    c->phonenumber[c->countNumbers - 1].number[0] = '\0';
+    c->countNumbers--;
+}
+static void editNames(Contact* c)
+{
+    char buffer[MAX_SIZE];
+
+    printf("\nИзмениние Ф.И.О (пусто - оставить без изменений)\n");
+
+    printf("Имя [%s]: ", c->name);
+    if(fgets(buffer, sizeof(buffer), stdin) != NULL)
+    {
+        buffer[strcspn(buffer, "\n")] = '\0';
+        if(buffer[0] != '\0')
+        {
+            strcpy(c->name, buffer);
+        }
+    }
+    
+    printf("Фамилия [%s]: ", c->surname);
+    if(fgets(buffer, sizeof(buffer), stdin) != NULL)
+    {
+        buffer[strcspn(buffer, "\n")] = '\0';
+        if(buffer[0] != '\0')
+        {
+            strcpy(c->surname, buffer);
+        }
+    }
+    
+    printf("Отчество [%s]: ", c->patronymic);
+    if(fgets(buffer, sizeof(buffer), stdin) != NULL)
+    {
+        buffer[strcspn(buffer, "\n")] = '\0';
+        if(buffer[0] != '\0')
+        {
+            strcpy(c->patronymic, buffer);
+        }
+    }
+}
+static void editNumber(Contact* c, int index)
+{
+    if (index < 0) 
+    {
+        fprintf(stderr, "Отрицательный индекс номера. Удаление невозможно!\n");
+        return;
+    }
+
+    if (index > c->countNumbers)
+    {
+        fprintf(stderr, "Выход за границы списка номеров\n");
+        return;
+    }
+    char buffer[MAX_SIZE];
+    printf("Номер [%s]: ", c->phonenumber[index]);
+    if(fgets(buffer, sizeof(buffer), stdin) != NULL)
+    {
+        buffer[strcspn(buffer, "\n")] = '\0';
+        if(buffer[0] != '\0')
+        {
+            strcpy(c->phonenumber[index].number, buffer);
+        }
+    }
+}
+static void editSocial(Contact* c, int index)
+{
+    if (index < 0) 
+    {
+        fprintf(stderr, "Отрицательный индекс соц сети. Удаление невозможно!\n");
+        return;
+    }
+
+    if (index > c->countSocial)
+    {
+        fprintf(stderr, "Выход за границы списка соц сетей\n");
+        return;
+    }
+
+    char buffer[MAX_SIZE];
+    printf("\nИзмениние Соц сети (пусто - оставить без изменений)\n");
+    printf("Никнейм [%s]: ", c->social[index].username);
+    if(fgets(buffer, sizeof(buffer), stdin) != NULL)
+    {
+        buffer[strcspn(buffer, "\n")] = '\0';
+        if(buffer[0] != '\0')
+        {
+            strcpy(c->social[index].username, buffer);
+        }
+    }
+    
+    printf("Тип соц сети [%s]: ", c->social[index].typeSocial);
+    if(fgets(buffer, sizeof(buffer), stdin) != NULL)
+    {
+        buffer[strcspn(buffer, "\n")] = '\0';
+        if(buffer[0] != '\0')
+        {
+            strcpy(c->social[index].typeSocial, buffer);
+        }
+    }
+    
+    printf("Ссылка на профиль [%s]: ", c->social[index].link);
+    if(fgets(buffer, sizeof(buffer), stdin) != NULL)
+    {
+        buffer[strcspn(buffer, "\n")] = '\0';
+        if(buffer[0] != '\0')
+        {
+            strcpy(c->social[index].link, buffer);
+        }
+    }
+}
 static void printContact(Contact* c)
 {
     printf("Информация о контакте: \nФамилия: %s\nИмя: %s\nОтчество: %s\n", c->surname, c->name, c->patronymic);
-    printf("Социальные сети:");
+    printf("\n----------------------------\n");
+    printf("Социальные сети: ");
     if (c->countSocial == 0)
     {
         printf("-\n");
     }
     else 
     {
+
         for (int i = 0; i < c->countSocial; ++i)
         {
+            printf("\nСоц сеть #%d\n", i + 1);
             printf("Тип соцсети: %s\nСсылка на профиль: %s\nНикнейм: %s\n", 
                 c->social[i].typeSocial,
                 c->social[i].link,
                 c->social[i].username);
         }
     }
+    printf("\n----------------------------\n");
     printf("Номера телефонов: ");
     if(c->countNumbers == 0)
     {
@@ -189,8 +325,10 @@ static void printContact(Contact* c)
     {
         for (int i = 0; i < c->countNumbers; ++i)
         {
-            printf("Номер #%d  %s\n", i + 1, c->phonenumber[i].number);
+            printf("\n");
+            printf("Номер #%d  %s", i + 1, c->phonenumber[i].number);
         }
+        printf("\n----------------------------\n");
     }
 }
 static void printPhonebook(Phonebook* pb)
@@ -206,15 +344,50 @@ static void printPhonebook(Phonebook* pb)
     }
 }
 
-static void addContactInPhonebook(Phonebook* pb, Contact* c)
+static void fillTestData(Phonebook* pb)
 {
-    if (pb->countContacts >= MAX_COUNT_CONTACTS)
+    const char* surnames[MAX_COUNT_CONTACTS] = {
+        "Иванов", "Петрова", "Сидоров", "Кузнецова",
+        "Смирнов", "Волкова", "Морозов", "Соколова"
+    };
+    const char* names[MAX_COUNT_CONTACTS] = {
+        "Иван", "Мария", "Алексей", "Ольга",
+        "Дмитрий", "Анна", "Сергей", "Екатерина"
+    };
+    const char* patronymics[MAX_COUNT_CONTACTS] = {
+        "Иванович", "Александровна", "Петрович", "Сергеевна",
+        "Дмитриевич", "Викторовна", "Николаевич", "Андреевна"
+    };
+    const char* socialTypes[MAX_COUNT] = { "Telegram", "VK", "Instagram", "WhatsApp" };
+
+    for (int i = 0; i < MAX_COUNT_CONTACTS; ++i)
     {
-        fprintf(stderr,"Телефонная книга заполнена\n");
-        return;
+        Contact* c = malloc(sizeof(Contact));
+        if (c == NULL) continue;
+
+        strcpy(c->surname, surnames[i]);
+        strcpy(c->name, names[i]);
+        strcpy(c->patronymic, patronymics[i]);
+
+        c->countNumbers = MAX_COUNT;
+        for (int j = 0; j < MAX_COUNT; ++j)
+        {
+            snprintf(c->phonenumber[j].number, sizeof(c->phonenumber[j].number),
+                     "+7-9%02d-%03d-%02d-%02d", i * 10 + j, j * 111, j * 11, j * 7);
+        }
+
+        c->countSocial = MAX_COUNT;
+        for (int j = 0; j < MAX_COUNT; ++j)
+        {
+            strcpy(c->social[j].typeSocial, socialTypes[j]);
+            snprintf(c->social[j].username, sizeof(c->social[j].username),
+                     "%s_%s_%d", names[i], surnames[i], j + 1);
+            snprintf(c->social[j].link, sizeof(c->social[j].link),
+                     "https://example.com/profile/%d/%d", i + 1, j + 1);
+        }
+
+        addContactInPhonebook(pb, c);
     }
-    pb->contacts[pb->countContacts] = c;
-    pb->countContacts++;
 }
 void print_interface(void)
 {
@@ -230,6 +403,7 @@ void print_interface(void)
         return;
     }
     pb->countContacts = 0;
+    fillTestData(pb);
 
     int running = 1;
     while (running)
@@ -253,8 +427,15 @@ void print_interface(void)
                 break;
             case MENU_ADD:
             {
-                Contact *c = addContact();
-                if (c != NULL) addContactInPhonebook(pb,c);
+                if (pb->countContacts != MAX_COUNT_CONTACTS)
+                {
+                    Contact *c = addContact();
+                    if (c != NULL) addContactInPhonebook(pb,c);
+                }
+                else
+                {
+                    fprintf(stderr, "Телефонная книга заполнена.\nДобавление номера невозможно.\nУдалите ненужный контакт\n");
+                }
                 break;
             }
             case MENU_DELETE:
@@ -318,34 +499,88 @@ void print_interface(void)
                     case EDIT_EXIT: break;
                     case EDIT_NAMES:
                     {
-                       // editNames(c);
+                        editNames(c);
                         break;
                     }
                     case EDIT_SOCIAL:
                     {
+                        printf("Выберите номер соц сети: ");
+                        
+                        char line3_2[8];
+                        fgets(line3_2, sizeof(line3_2), stdin);
+                        line3_2[strcspn(line3_2, "\n")] = '\0';
+                        int socialNum = atoi(line3_2);
+
+                        if(socialNum < 1 || socialNum > c->countSocial)
+                        {
+                            fprintf(stderr, "Некорректный номер соц сети\n");
+                            break;
+                        }
+                        else
+                        {
+                            editSocial(c, socialNum - 1);
+                        }
                         break;
                     }
                     case EDIT_SOCIAL_DELETE:
                     {
                         printf("Выберите номер соц сети: ");
+                        
                         char line3_3[8];
                         fgets(line3_3, sizeof(line3_3), stdin);
                         line3_3[strcspn(line3_3, "\n")] = '\0';
                         int socialNum = atoi(line3_3);
-                        if(socialNum < 1)
+
+                        if(socialNum < 1 || socialNum > c->countSocial)
                         {
                             fprintf(stderr, "Некорректный номер соц сети\n");
                             break;
                         }
-                        deleteSocial(c, socialNum - 1);
+                        else
+                        {
+                            deleteSocial(c, socialNum - 1);
+                        }
                         break;
                     }
                     case EDIT_PHONE:
                     {
+                        printf("\nИзменение номера телефона (пусто - оставить без изменений)\n");
+
+                        printf("Выберите номер номера: ");
+                        char line3_4[8];
+                        fgets(line3_4, sizeof(line3_4), stdin);
+                        line3_4[strcspn(line3_4, "\n")] = '\0';
+                        int numNum = atoi(line3_4);
+
+                        if(numNum < 1 || numNum > c->countNumbers)
+                        {
+                            fprintf(stderr, "Некорректный номер номера\n");
+                            break;
+                        }
+                        else
+                        {
+                            editNumber(c, numNum - 1);
+                        }
                         break;
                     }
                     case EDIT_PHONE_DELETE:
                     {
+                        printf("Выберите номер номера (ага номер номера): ");
+                        
+                        char line3_5[8];
+                        fgets(line3_5, sizeof(line3_5), stdin);
+                        line3_5[strcspn(line3_5, "\n")] = '\0';
+                        int numNum = atoi(line3_5);
+
+                        if(numNum < 1 || numNum > c->countNumbers)
+                        {
+                            fprintf(stderr, "Некорректный номер номера\n");
+                            break;
+                        }
+                        else
+                        {
+                            deleteNumber(c, numNum - 1);
+                        }
                         break;
                     }
                     default: 
