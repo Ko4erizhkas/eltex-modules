@@ -1,1 +1,8 @@
 *.exe
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.so
+*.tmp

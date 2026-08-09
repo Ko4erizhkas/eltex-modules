@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /d/eltex-modules/module2/2/2.3/tests && wc -l test_calc.c Makefile && head -30 test_calc.c && echo \"=== 2.1 header ===\" && head -40 ../../2.1/phoneBook.h)",
+      "Read(//d/2.1/**)"
+    ]
+  }
+}
