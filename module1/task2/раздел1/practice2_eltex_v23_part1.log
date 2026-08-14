@@ -1,0 +1,45 @@
+useradd -m -s /bin/bash user1
+passwd user1
+adduser user2
+adduser user3
+usermod -s /usr/sbin/nologin user3
+su - user3
+su -s /bin/bash - user3
+groupadd sharegroup
+usermod -aG sharegroup user1
+usermod -aG sharegroup user2
+usermod -aG sharegroup user3
+mkdir /opt/share
+chgrp sharegroup /opt/share
+chmod 2770 /opt/share
+ls -ld /opt/share
+echo 'umask 0026' | tee -a /home/user1/.bashrc
+
+su - user1 -c 'echo test1 > /opt/share/f1.txt'
+su - user2 -c 'echo test2 > /opt/share/f2.txt'
+su -s /bin/bash - user3 -c 'echo test3 > /opt/share/f3.txt'
+ls -l /opt/share
+total 12
+-rw-r--r-- 1 user1 sharegroup 6 Aug 13 12:26 f1.txt
+-rw-r--r-- 1 user2 sharegroup 6 Aug 13 12:28 f2.txt
+-rw-r--r-- 1 user3 sharegroup 6 Aug 13 12:28 f3.txt
+
+su - user2 -c 'rm /opt/share/f1.txt'
+chmod +t /opt/share
+
+ls -ld /opt/share
+drwxrws--T 2 root sharegroup 4096 Aug 13 12:28 /opt/share
+
+su - user1 -c 'sudo dmesg | head -3'
+
+tee /usr/local/bin/show_dmesg.sh > /dev/null <<'EOF'
+> #!/bin/bash
+> /usr/bin/dmesg
+> EOF
+chmod 4755 /usr/local/bin/show_dmesg.sh
+for u in user1 user2 user3; do sudo chage -M 10 $u; done
+sudo chage -l user1
+nano /etc/motd
+rsync -a /etc/ /root/etc_backup/
+sudo apt install p7zip-full
+du -sh /root/etc_backup

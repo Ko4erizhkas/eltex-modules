@@ -1,0 +1,21 @@
+journalctl -b -o short-monotonic --no-pager | awk -F'[][]' '$2+0 <= 20'
+
+sudo find / -name "auth.log" 2>/dev/null
+/var/log/auth.log
+
+sudo awk '{ src=$5; sub(/\[[0-9]+\]/,"",src); print src }' /var/log/auth.log \
+  | sed 's/:$//' \ sort \ uniq -c \
+  | sort -rn
+
+awk -F: '$7=="/usr/sbin/nologin"{print $3, $1}' /etc/passwd \
+  | sort -rn \
+  | while read uid user; do echo "$uid, $user, $(id -nG $user | tr ' ' ',')"; done
+
+
+sudo dmesg | grep -i kernel
+sudo wc -l /var/log/kern.log
+
+
+awk -F': ' ' /^Start-Date:/ { s = $2 } /^Commandline:/ { c = $2 } /^End-Date:/ { print "Commandline: " c " ; Start-Date: " 
+  s " ; End-Date: " $2; c = s = "" }
+' /var/log/apt/history.log

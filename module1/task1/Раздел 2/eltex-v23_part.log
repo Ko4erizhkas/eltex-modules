@@ -1,0 +1,244 @@
+eltex-v23@eltex-2026-summer:~$ ls
+
+ls           lsblk        lscpu        lsinitramfs  lsirq        lslogins     lsmod        lsof         lsusb
+lsattr       lsb_release  lsfd         lsipc        lslocks      lsmem        lsns         lspci
+
+eltex-v23@eltex-2026-summer:~$ ls
+
+ls           lsblk        lscpu        lsinitramfs  lsirq        lslogins     lsmod        lsof         lsusb
+lsattr       lsb_release  lsfd         lsipc        lslocks      lsmem        lsns         lspci
+
+eltex-v23@eltex-2026-summer:~$ echo "$HISTSIZE"
+1000
+
+eltex-v23@eltex-2026-summer:~$ $HIST
+$HISTCMD       $HISTCONTROL   $HISTFILE      $HISTFILESIZE  $HISTSIZE
+
+
+eltex-v23@eltex-2026-summer:~$ ls -a
+.              .bash_logout  eltex-v23_part.log       .local    report_part1.txt       server1.pub  .Xauthority
+..             .bashrc       .eltex-v23_part.log.swp  .log      .report_part1.txt.swo  .ssh
+.bash_history  .config       .lesshst                 .profile  server1                .viminfo
+
+eltex-v23@eltex-2026-summer:~$ export DATE=$(date)
+eltex-v23@eltex-2026-summer:~$ printenv | grep DATE
+DATE=Чт 16 июл 2026 17:54:28 +07
+
+eltex-v23@eltex-2026-summer:~$ export TIME=$(date + %H:%M:%S)
+date: extra operand ‘%H:%M:%S’
+Try 'date --help' for more information.
+
+eltex-v23@eltex-2026-summer:~$ export TIME=$(date +%H:%M:%S)
+
+eltex-v23@eltex-2026-summer:~$ export DATE_TIME="$DATE $TIME"
+
+eltex-v23@eltex-2026-summer:~$ printenv | grep DATE_TIME
+DATE_TIME=Чт 16 июл 2026 17:54:28 +07 17:55:20
+
+eltex-v23@eltex-2026-summer:~$ ls /sbin | grep "[0-9]"
+dumpe2fs
+e2freefrag
+e2fsck
+e2image
+e2label
+e2mmpstatus
+e2scrub
+e2scrub_all
+e2undo
+e4crypt
+e4defrag
+fsck.ext2
+fsck.ext3
+fsck.ext4
+killall5
+mke2fs
+mkfs.ext2
+mkfs.ext3
+mkfs.ext4
+resize2fs
+tune2fs
+update-grub2
+
+eltex-v23@eltex-2026-summer:~$ ls /bin | grep "[0-9]"
+
+addr2line
+b2sum
+base32
+base64
+bunzip2
+bzip2
+bzip2recover
+c89
+c89-gcc
+c99
+c99-gcc
+cpan5.36-x86_64-linux-gnu
+cpp-12
+diff3
+enc2xs
+gcc-12
+gcc-ar-12
+gcc-nm-12
+gcc-ranlib-12
+gcov-12
+gcov-dump-12
+gcov-tool-12
+grub-menulst2cfg
+grub-mkpasswd-pbkdf2
+grub-syslinux2cfg
+h2ph
+h2xs
+i386
+linux32
+linux64
+lto-dump-12
+md5sum
+md5sum.textutils
+pdb3
+pdb3.11
+perl5.36.0
+perl5.36-x86_64-linux-gnu
+ping4
+ping6
+pl2pm
+pod2html
+pod2man
+pod2text
+pod2usage
+py3clean
+py3compile
+py3versions
+pydoc3
+pydoc3.11
+pygettext3
+pygettext3.11
+python3
+python3.11
+sha1sum
+sha224sum
+sha256sum
+sha384sum
+sha512sum
+ssh-argv0
+systemd-id128
+traceroute6
+traceroute6.db
+x86_64
+x86_64-linux-gnu-addr2line
+x86_64-linux-gnu-ar
+x86_64-linux-gnu-as
+x86_64-linux-gnu-c++filt
+x86_64-linux-gnu-cpp
+x86_64-linux-gnu-cpp-12
+x86_64-linux-gnu-dwp
+x86_64-linux-gnu-elfedit
+x86_64-linux-gnu-gcc
+x86_64-linux-gnu-gcc-12
+x86_64-linux-gnu-gcc-ar
+x86_64-linux-gnu-gcc-ar-12
+x86_64-linux-gnu-gcc-nm
+x86_64-linux-gnu-gcc-nm-12
+x86_64-linux-gnu-gcc-ranlib
+x86_64-linux-gnu-gcc-ranlib-12
+x86_64-linux-gnu-gcov
+x86_64-linux-gnu-gcov-12
+x86_64-linux-gnu-gcov-dump
+x86_64-linux-gnu-gcov-dump-12
+x86_64-linux-gnu-gcov-tool
+x86_64-linux-gnu-gcov-tool-12
+x86_64-linux-gnu-gold
+x86_64-linux-gnu-gp-archive
+x86_64-linux-gnu-gp-collect-app
+x86_64-linux-gnu-gp-display-html
+x86_64-linux-gnu-gp-display-src
+x86_64-linux-gnu-gp-display-text
+x86_64-linux-gnu-gprof
+x86_64-linux-gnu-gprofng
+x86_64-linux-gnu-ld
+x86_64-linux-gnu-ld.bfd
+x86_64-linux-gnu-ld.gold
+x86_64-linux-gnu-lto-dump
+x86_64-linux-gnu-lto-dump-12
+x86_64-linux-gnu-nm
+x86_64-linux-gnu-objcopy
+x86_64-linux-gnu-objdump
+x86_64-linux-gnu-ranlib
+x86_64-linux-gnu-readelf
+x86_64-linux-gnu-size
+x86_64-linux-gnu-strings
+x86_64-linux-gnu-strip
+
+eltex-v23@eltex-2026-summer:~$ vim .profile
+
+# the default umask is set in /etc/profile; for setting the umask
+# for ssh logins, install and configure the libpam-umask package.
+#umask 022
+
+# if running bash
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+    fi
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+".profile" 27L, 807B written
+
+eltex-v23@eltex-2026-summer:~$ vim .profile
+
+# the default umask is set in /etc/profile; for setting the umask
+# for ssh logins, install and configure the libpam-umask package.
+#umask 022
+
+# if running bash
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+    fi
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+bash -c " echo " $(whoami)@$(hostname)-$(date +%H:%M)" "
+".profile" 28L, 864B written
+
+
+eltex-v23@eltex-2026-summer:~$ mkdir -p "$(date +%Y)"-{01..12}
+
+eltex-v23@eltex-2026-summer:~$ ls -lh
+
+total 88K
+drwxr-xr-x 2 eltex-v23 eltex-v23 4,0K июл 16 18:01 2026-01
+drwxr-xr-x 2 eltex-v23 eltex-v23 4,0K июл 16 18:01 2026-02
+drwxr-xr-x 2 eltex-v23 eltex-v23 4,0K июл 16 18:01 2026-03
+drwxr-xr-x 2 eltex-v23 eltex-v23 4,0K июл 16 18:01 2026-04
+drwxr-xr-x 2 eltex-v23 eltex-v23 4,0K июл 16 18:01 2026-05
+drwxr-xr-x 2 eltex-v23 eltex-v23 4,0K июл 16 18:01 2026-06
+drwxr-xr-x 2 eltex-v23 eltex-v23 4,0K июл 16 18:01 2026-07
+drwxr-xr-x 2 eltex-v23 eltex-v23 4,0K июл 16 18:01 2026-08
+drwxr-xr-x 2 eltex-v23 eltex-v23 4,0K июл 16 18:01 2026-09
+drwxr-xr-x 2 eltex-v23 eltex-v23 4,0K июл 16 18:01 2026-10
+drwxr-xr-x 2 eltex-v23 eltex-v23 4,0K июл 16 18:01 2026-11
+drwxr-xr-x 2 eltex-v23 eltex-v23 4,0K июл 16 18:01 2026-12
+-rw-r--r-- 1 eltex-v23 eltex-v23  23K июл 16 18:01 eltex-v23_part.log
+-rw-r--r-- 1 eltex-v23 eltex-v23  126 июл  7 18:16 report_part1.txt
+-rw------- 1 eltex-v23 eltex-v23 2,6K июл  8 11:24 server1
+-rw-r--r-- 1 eltex-v23 eltex-v23  581 июл  8 11:24 server1.pub
+
