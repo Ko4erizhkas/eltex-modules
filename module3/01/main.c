@@ -1,17 +1,3 @@
-/*
- * Копирование файлов через канал между родительским и дочерним процессами.
- *
- *     ./q01.exe [-p имя_канала] файл1 [файл2 ...]
- *
- * Протокол (сообщения — структура фиксированного размера):
- *     потомок  -> родитель : MSG_READY   готов принимать файл
- *     родитель -> потомок  : MSG_HEADER  имя и размер
- *     родитель -> потомок  : ровно size байт блоками по BLOCK
- *     родитель -> потомок  : MSG_QUIT    файлы кончились
- *
- * Без -p используется пара pipe, с -p — пара FIFO: <имя> и <имя>.back.
- */
-
 #define _POSIX_C_SOURCE 200809L
 
 #include <errno.h>
@@ -36,7 +22,6 @@ struct message
     char  name[MAXNAME];
 };
 
-/* Читает ровно n байт; меньше — только при EOF, -1 — ошибка. */
 static ssize_t readN(int fd, void *buf, size_t n)
 {
     size_t done = 0;
@@ -53,7 +38,6 @@ static ssize_t readN(int fd, void *buf, size_t n)
     return (ssize_t)done;
 }
 
-/* Записывает ровно n байт; 0 — успех, -1 — ошибка. */
 static int writeN(int fd, const void *buf, size_t n)
 {
     size_t done = 0;
@@ -68,7 +52,6 @@ static int writeN(int fd, const void *buf, size_t n)
     return 0;
 }
 
-/* Дожидается от потомка сообщения о готовности. */
 static int waitReady(int rfd)
 {
     struct message msg;
@@ -76,6 +59,26 @@ static int waitReady(int rfd)
     if (readN(rfd, &msg, sizeof(msg)) != (ssize_t)sizeof(msg) || msg.type != MSG_READY)
     {
         fprintf(stderr, "Потомок не готов принимать данные\n");
+        return -1;
+    }
+    return 0;
+}
+
+static int makeFifo(const char *path)
+{
+    struct stat st;
+
+    if (mkfifo(path, 0666) == 0)
+        return 0;
+
+    if (errno != EEXIST)
+    {
+        fprintf(stderr, "mkfifo %s: %s\n", path, strerror(errno));
+        return -1;
+    }
+    if (stat(path, &st) == -1 || !S_ISFIFO(st.st_mode))
+    {
+        fprintf(stderr, "%s существует и не является каналом\n", path);
         return -1;
     }
     return 0;
@@ -133,8 +136,6 @@ static int parent(int rfd, int wfd, int count, char *files[])
         printf("Передан %s (%lld байт)\n", files[i], (long long)st.st_size);
     }
 
-    /* Потомок в цикле уже отправил очередной READY — вычитываем его,
-     * иначе он упрётся в закрытый канал и получит SIGPIPE. */
     if (waitReady(rfd) == -1)
         return -1;
 
@@ -216,12 +217,8 @@ int main(int argc, char *argv[])
     if (fifo != NULL)
     {
         snprintf(back, sizeof(back), "%s.back", fifo);
-        if ((mkfifo(fifo, 0666) == -1 && errno != EEXIST) ||
-            (mkfifo(back, 0666) == -1 && errno != EEXIST))
-        {
-            perror("mkfifo");
+        if (makeFifo(fifo) == -1 || makeFifo(back) == -1)
             return EXIT_FAILURE;
-        }
     }
     else if (pipe(toChild) == -1 || pipe(toParent) == -1)
     {
@@ -229,7 +226,6 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    /* Если потомок умрёт, write вернёт EPIPE вместо убийства процесса. */
     signal(SIGPIPE, SIG_IGN);
 
     if ((pid = fork()) == -1)
@@ -240,8 +236,6 @@ int main(int argc, char *argv[])
 
     if (pid == 0)
     {
-        /* Порядок открытия FIFO должен совпадать у обоих процессов,
-         * иначе open заблокирует их намертво. */
         if (fifo != NULL)
         {
             if ((rfd = open(fifo, O_RDONLY)) == -1 || (wfd = open(back, O_WRONLY)) == -1)
