@@ -6,3 +6,6 @@
 *.dll
 *.so
 *.tmp
+*.copy
+*.bin
+*.txt
